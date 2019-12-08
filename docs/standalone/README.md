@@ -158,6 +158,8 @@ NOTE: The steps described in this section will install Grafeas and Kritis charts
 
     ```shell
     ./attestation_created.sh
+    
+    curl 127.0.0.1:8080/v1beta1/projects/kritis/occurrences
     ```
 
     You should get `pod/java created` in response and see the following in
@@ -173,6 +175,21 @@ NOTE: The steps described in this section will install Grafeas and Kritis charts
       strategy.go:51] Image gcr.io/kritis-tutorial/java-with-vulnz@sha256:358687cfd3ec8e1dfeb2bf51b5110e4e16f6df71f64fba01986f720b2fcba68a has one or more valid attestation(s)
       ...
     ```
+    
+## reinstall
+
+```
+$ kubectl delete validatingwebhookconfigurations.admissionregistration.k8s.io kritis-validation-hook-deployments kritis-validation-hook 
+
+$ cd ../../ && docker build -f deploy/Dockerfile -t registry.cn-beijing.aliyuncs.com/mirror-233/kritis-server:v0.2.0 .
+$ docker push registry.cn-beijing.aliyuncs.com/mirror-233/kritis-server:v0.2.0
+
+$ kubectl delete po -l app=kritis-validation-hook
+
+$ kubectl delete po/kritis-postinstall
+$ kubectl apply -f kritis/postinstall/pod.yaml
+
+```
 
 ## Cleanup
 

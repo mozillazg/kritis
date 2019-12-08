@@ -22,7 +22,7 @@ RUN make ${stage}
 FROM golang:1.12
 RUN go get -u github.com/cloudflare/cfssl/cmd/...
 
-ENV KUBECTL_VERSION v1.10.0
+ENV KUBECTL_VERSION v1.14.9
 RUN curl -Lo /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl  && \
     chmod +x /usr/local/bin/kubectl
 

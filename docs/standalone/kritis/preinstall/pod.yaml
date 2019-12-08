@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kritis-preinstall
+  annotations:
+    "helm.sh/hook": "pre-install"
+#  labels:
+#    {{ .Values.kritisInstallLabel }}: ""
+spec:
+  restartPolicy: Never
+  containers:
+  - name: kritis-preinstall
+    image: "registry.cn-beijing.aliyuncs.com/mirror-233/kritis-project-preinstall:v0.2.0"
+    imagePullPolicy: Always
+    args:
+      - "--csr-name"
+      - tls-webhook-secret-cert
+      - "--tls-secret-name"
+      - tls-webhook-secret
+      - --create-new-csr=true
+      - "--kritis-service-name"
+      - kritis-validation-hook
+      - "--kritis-service-name-deployments"
+      - kritis-validation-hook-deployments
+      - "--kritis-install-label"
+      - "kritis.grafeas.io/install"
+    command: ["/preinstall"]
+    # /preinstall --csr-name tls-webhook-secret-cert --tls-secret-name tls-webhook-secret --create-new-csr=true --kritis-service-name kritis-validation-hook
+#    command: ["sleep", "66666666"]

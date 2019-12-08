@@ -61,5 +61,7 @@ var (
 		"gcr.io/kritis-project/postinstall",
 		"gcr.io/kritis-project/predelete",
 		"us.gcr.io/grafeas/grafeas-server",
+		"registry.cn-beijing.aliyuncs.com/mirror-233/kritis-server",
+		"registry.cn-hangzhou.aliyuncs.com/google_containers/storage-provisioner",
 	}
 )

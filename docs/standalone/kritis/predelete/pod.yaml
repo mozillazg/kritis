@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kritis-predelete
+  namespace: default
+  annotations:
+    "helm.sh/hook": "pre-delete"
+    "kritis.grafeas.io/breakglass": "true"
+#  labels:
+#    {{ .Values.kritisInstallLabel }}: ""
+spec:
+  serviceAccountName: default
+  restartPolicy: Never
+  containers:
+  - name: kritis-predelete
+    image: gcr.azk8s.cn/kritis-project/predelete:v0.2.0
+    imagePullPolicy: Always
+    args:
+    - "--webhook-name"
+    - kritis-validation-hook
+    - "--deployment-webhook-name"
+    - kritis-validation-hook-deployments
+    - "--tls-secret-name"
+    - tls-webhook-secret
+    - "--csr-name"
+    - tls-webhook-secret-cert
+#    - --delete-csr=true
+#    - --delete-crd=true
+    command: ["/predelete"]

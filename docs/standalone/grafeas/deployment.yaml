@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafeas-server
+  labels:
+    app.kubernetes.io/name: grafeas-server
+#    helm.sh/chart: {{ include "grafeas.chart" . }}
+#    app.kubernetes.io/instance: {{ .Release.Name }}
+#    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grafeas-server
+#      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: grafeas-server
+#        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: grafeas-server
+          image: "gcr.azk8s.cn/grafeas/grafeas-server:v0.1.4"
+          imagePullPolicy: Always
+          command: ["/grafeas-server"]
+          args: ["--config=/etc/config/config.yaml"]
+          ports:
+            - name: grafeas
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/config
+          - name: certificates
+            mountPath: /certificates
+#          - name: persistent-volume
+#            mountPath: /data
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          livenessProbe:
+             tcpSocket:
+               port: grafeas
+             initialDelaySeconds: 15
+             periodSeconds: 10
+             failureThreshold: 3
+          readinessProbe:
+             tcpSocket:
+               port: grafeas
+             initialDelaySeconds: 15
+             periodSeconds: 10
+             failureThreshold: 3
+      volumes:
+        - name: config-volume
+          configMap:
+            name: grafeas
+            items:
+            - key: config
+              path: config.yaml
+        - name: certificates
+          secret:
+            secretName: grafeas-ssl-certs
+#        - name: persistent-volume
+#          persistentVolumeClaim:
+#            claimName: grafeas
+#      nodeSelector:
+

@@ -93,6 +93,8 @@ type Config struct {
 
 // MetadataClient returns metadata.ReadWriteClient based on the admission control config
 func MetadataClient(config *Config) (metadata.ReadWriteClient, error) {
+	return grafeas.New(config.Grafeas, config.Certs)
+
 	if config.Metadata == constants.GrafeasMetadata {
 		return grafeas.New(config.Grafeas, config.Certs)
 	}
@@ -104,6 +106,8 @@ func MetadataClient(config *Config) (metadata.ReadWriteClient, error) {
 
 // MetadataReadOnlyClient returns metadata.ReadOnlyClient based on the admission control config
 func MetadataReadOnlyClient(config *Config) (metadata.ReadOnlyClient, error) {
+	return grafeas.New(config.Grafeas, config.Certs)
+
 	if config.Metadata == constants.GrafeasMetadata {
 		return grafeas.New(config.Grafeas, config.Certs)
 	}

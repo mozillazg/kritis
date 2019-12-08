@@ -1,0 +1,17 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: kritis-preinstall-clusterrolebinding
+  annotations:
+    "helm.sh/hook": "pre-install"
+    "helm.sh/hook-weight": "2"
+  labels:
+    "kritis.grafeas.io/install": ""
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    namespace: default
+    name: default

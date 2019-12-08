@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -e
+set -ex
 
 # Create KritisConfig CRD in the k8s cluster and set it.
 kubectl apply -f ../../artifacts/kritis-config-crd.yaml
@@ -42,4 +42,34 @@ openssl x509 -req -days 365 -in kritis.csr -CA ca.crt -CAkey ca.key -set_serial 
 rm kritis.csr
 
 # Install Kritis helm chart
-helm install --name kritis https://storage.googleapis.com/kritis-charts/repository/kritis-charts-0.1.0.tgz --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat kritis.crt)" --set certificates.key="$(cat kritis.key)"
+# helm install --name kritis https://storage.googleapis.com/kritis-charts/repository/kritis-charts-0.1.0.tgz --set \
+# certificates.ca="$(cat ca.crt)" \
+# --set certificates.cert="$(cat kritis.crt)" \
+# --set certificates.key="$(cat kritis.key)"
+
+
+CA=$(cat ca.crt | base64 | tr -d '\n')
+CE=$(cat kritis.crt | base64 | tr -d '\n')
+KEY=$(cat kritis.key | base64 | tr -d '\n')
+
+sed -e "s|\${CA}|${CA}|g" ./kritis/secrets.yaml > ./kritis/secrets_1.yaml
+sed -e "s|\${CE}|${CE}|g" ./kritis/secrets_1.yaml > ./kritis/secrets_2.yaml
+sed -e "s|\${KEY}|${KEY}|g" ./kritis/secrets_2.yaml > ./kritis/secrets_final.yaml
+
+kubectl apply -f ./kritis/configmap.yaml
+kubectl apply -f ./kritis/secrets_final.yaml
+
+kubectl apply -f ./kritis/rbac.yaml
+kubectl apply -f ./kritis/preinstall/clusterrolebinding.yaml
+
+# cd ../../
+# docker build -f helm-hooks/Dockerfile \
+# -t registry.cn-beijing.aliyuncs.com/mirror-233/kritis-project-preinstall:v0.2.0 . \
+# --build-arg stage=preinstall
+
+kubectl apply -f ./kritis/preinstall/pod.yaml
+
+kubectl apply -f ./kritis/kritis-server-service.yaml
+kubectl apply -f ./kritis/kritis-server-deployment.yaml
+
+kubectl apply -f ./kritis/postinstall/pod.yaml

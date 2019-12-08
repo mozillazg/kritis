@@ -1,0 +1,54 @@
+module github.com/grafeas/kritis
+
+go 1.13
+
+require (
+	cloud.google.com/go v0.27.0
+	github.com/Azure/go-autorest v10.12.0+incompatible
+	github.com/davecgh/go-spew v1.1.0
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/ghodss/yaml v1.0.0
+	github.com/gogo/protobuf v1.0.0
+	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
+	github.com/golang/protobuf v1.1.0
+	github.com/google/btree v0.0.0-20180124185431-e89373fe6b4a
+	github.com/google/go-containerregistry v0.0.0-20180705144858-d54baf9aa28e
+	github.com/google/gofuzz v0.0.0-20170612174753-24818f796faf
+	github.com/googleapis/gax-go v2.0.0+incompatible
+	github.com/googleapis/gnostic v0.2.0
+	github.com/gophercloud/gophercloud v0.0.0-20180708220030-45c2d035713f
+	github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7
+	github.com/hashicorp/golang-lru v0.0.0-20180201235237-0fb14efe8c47
+	github.com/imdario/mergo v0.3.5
+	github.com/inconshreveable/mousetrap v1.0.0
+	github.com/json-iterator/go v0.0.0-20180701071628-ab8a2e0c74be
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
+	github.com/petar/GoLLRB v0.0.0-20130427215148-53be0d36a84c
+	github.com/peterbourgon/diskv v2.0.1+incompatible
+	github.com/pkg/errors v0.8.0
+	github.com/sirupsen/logrus v1.0.5
+	github.com/spf13/cobra v0.0.3
+	github.com/spf13/pflag v1.0.1
+	go.opencensus.io v0.14.0
+	golang.org/x/crypto v0.0.0-20180723164146-c126467f60eb
+	golang.org/x/net v0.0.0-20180709044923-6f138e0f6071
+	golang.org/x/oauth2 v0.0.0-20180620175406-ef147856a6dd
+	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f
+	golang.org/x/sys v0.0.0-20180709060233-1b2967e3c290
+	golang.org/x/text v0.3.0
+	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2
+	golang.org/x/tools v0.0.0-20180709043716-e2be0f7276f6
+	google.golang.org/api v0.0.0-20180708001111-ac730e38c551
+	google.golang.org/appengine v1.1.0
+	google.golang.org/genproto v0.0.0-20180831171423-11092d34479b
+	google.golang.org/grpc v1.13.0
+	gopkg.in/inf.v0 v0.9.1
+	gopkg.in/yaml.v2 v2.2.1
+	k8s.io/api v0.0.0-20180607160240-8c14244ab7ee
+	k8s.io/apimachinery v0.0.0-20180228050457-302974c03f7e
+	k8s.io/client-go v0.0.0-20180608153230-74dcea033614
+	k8s.io/code-generator v0.0.0-20180228050103-7ead8f38b01c
+	k8s.io/gengo v0.0.0-20180702041517-fdcf9f9480fd
+	k8s.io/kube-openapi v0.0.0-20180629012420-d83b052f768a
+)

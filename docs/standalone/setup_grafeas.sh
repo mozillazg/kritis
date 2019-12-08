@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -e
+set -ex
 
 # Generate Certificate Authority
 openssl genrsa -out ca.key 2048
@@ -33,4 +33,21 @@ openssl x509 -req -days 365 -in grafeas.csr -CA ca.crt -CAkey ca.key -set_serial
 rm grafeas.csr
 
 # Install Grafeas helm chart
-helm install --name grafeas https://storage.googleapis.com/grafeas-charts/repository/grafeas-charts-0.1.0.tgz --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat grafeas.crt)" --set "certificates.key=$(cat grafeas.key)" --set service.type="LoadBalancer"
+# helm install --name grafeas https://storage.googleapis.com/grafeas-charts/repository/grafeas-charts-0.1.0.tgz --set certificates.ca="$(cat ca.crt)" --set certificates.cert="$(cat grafeas.crt)" --set "certificates.key=$(cat grafeas.key)" --set service.type="LoadBalancer"
+
+CA=$(cat ca.crt | base64 | tr -d '\n')
+CE=$(cat grafeas.crt | base64 | tr -d '\n')
+KEY=$(cat grafeas.key | base64 | tr -d '\n')
+
+sed -e "s|\${CA}|${CA}|g" ./grafeas/secrets.yaml > ./grafeas/secrets_1.yaml
+sed -e "s|\${CE}|${CE}|g" ./grafeas/secrets_1.yaml > ./grafeas/secrets_2.yaml
+sed -e "s|\${KEY}|${KEY}|g" ./grafeas/secrets_2.yaml > ./grafeas/secrets_final.yaml
+
+kubectl apply -f ./grafeas/configmap.yaml
+kubectl apply -f ./grafeas/secrets_final.yaml
+
+kubectl delete services grafeas-server
+kubectl apply -f ./grafeas/service.yaml
+
+kubectl delete deployments grafeas-server
+kubectl apply -f ./grafeas/deployment.yaml

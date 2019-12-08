@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafeas-server
+  labels:
+    app.kubernetes.io/name: grafeas-server
+#    helm.sh/chart: {{ include "grafeas.chart" . }}
+#    app.kubernetes.io/instance: {{ .Release.Name }}
+#    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: grafeas-old
+    - port: 443
+      targetPort: 8080
+      protocol: TCP
+      name: grafeas
+  selector:
+    app.kubernetes.io/name: grafeas-server
+#    app.kubernetes.io/instance: {{ .Release.Name }}

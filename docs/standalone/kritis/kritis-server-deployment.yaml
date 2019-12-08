@@ -1,0 +1,56 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: kritis-validation-hook
+  labels:
+    app: kritis-validation-hook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kritis-validation-hook
+  template:
+    metadata:
+      labels:
+        app: kritis-validation-hook
+    spec:
+      containers:
+      - name: kritis-validation-hook
+        image: "registry.cn-beijing.aliyuncs.com/mirror-233/kritis-server:v0.2.0"
+        imagePullPolicy: Always
+        args: ["--tls-cert-file=/var/tls/tls.crt",
+               "--tls-key-file=/var/tls/tls.key",
+               "--grafeas-certs=/etc/config/grafeascerts.yaml",
+               "--logtostderr"]
+        ports:
+          - name: https
+            containerPort: 8443
+            protocol: TCP
+        volumeMounts:
+        - mountPath: /var/tls
+          name: tls
+#        - name: gac-ca-admin
+#          mountPath: /secret
+        - name: certconfig
+          mountPath: /etc/config
+        - name: certificates
+          mountPath: /certificates
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /secret/gac.json
+      volumes:
+        - name: tls
+          secret:
+            secretName: tls-webhook-secret
+#        - name: gac-ca-admin
+#          secret:
+#            secretName: gac-ca-admin
+        - name: certconfig
+          configMap:
+            name: grafeas-certs-config
+            items:
+              - key: config
+                path: grafeascerts.yaml
+        - name: certificates
+          secret:
+            secretName: kritis-ssl-certs

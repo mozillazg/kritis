@@ -25,6 +25,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang/glog"
 	"google.golang.org/grpc/credentials"
 
 	kritisv1beta1 "github.com/grafeas/kritis/pkg/kritis/apis/kritis/v1beta1"
@@ -101,7 +102,9 @@ func New(config kritisv1beta1.GrafeasConfigSpec, certs *CertConfig) (*Client, er
 			Certificates: []tls.Certificate{certificate},
 			RootCAs:      certPool,
 		})
-		conn, err = grpc.Dial(config.Addr, grpc.WithTransportCredentials(creds))
+		_ = creds
+		// conn, err = grpc.Dial(config.Addr, grpc.WithTransportCredentials(creds))
+		conn, err = grpc.Dial(config.Addr, grpc.WithInsecure())
 		if err != nil {
 			return nil, err
 		}
@@ -254,16 +257,18 @@ func (c Client) fetchVulnerabilityOccurrence(containerImage string, kind string)
 }
 
 func (c Client) fetchAttestationOccurrence(containerImage string, kind string, aa *kritisv1beta1.AttestationAuthority) ([]*grafeas.Occurrence, error) {
-	noteProject, err := metadata.GetProjectFromNoteReference(aa.Spec.NoteReference)
-	if err != nil {
-		return nil, err
-	}
+	// noteProject, err := metadata.GetProjectFromNoteReference(aa.Spec.NoteReference)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	req := &grafeas.ListOccurrencesRequest{
-		Filter:   fmt.Sprintf("resource_url=%q AND kind=%q", util.GetResourceURL(containerImage), kind),
+		// Filter:   fmt.Sprintf("resource_url=%q AND kind=%q", util.GetResourceURL(containerImage), kind),
 		PageSize: constants.PageSize,
-		Parent:   fmt.Sprintf("projects/%s", noteProject),
+		// Parent:   fmt.Sprintf("projects/%s", noteProject),
+		Parent:   fmt.Sprintf("projects/%s", "kritis"),
 	}
+	glog.Infof("fetchAttestationOccurrence %#v", req)
 	var occs []*grafeas.Occurrence
 	var nextPageToken string
 	for {
@@ -278,5 +283,7 @@ func (c Client) fetchAttestationOccurrence(containerImage string, kind string, a
 			break
 		}
 	}
+
+	glog.Infof("fetchAttestationOccurrence occs %#v", occs)
 	return occs, nil
 }

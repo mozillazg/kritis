@@ -29,7 +29,7 @@ import (
 	"google.golang.org/genproto/googleapis/devtools/containeranalysis/v1beta1/attestation"
 	"google.golang.org/genproto/googleapis/devtools/containeranalysis/v1beta1/grafeas"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	// "google.golang.org/grpc/credentials"
 )
 
 const (
@@ -38,12 +38,12 @@ const (
 	caFile               = "ca.crt"
 	AttestationAuthority = "ATTESTATION_AUTHORITY"
 	DefaultProject       = "kritis"
-	Image                = "gcr.io/kritis-tutorial/java-with-vulnz@sha256:358687cfd3ec8e1dfeb2bf51b5110e4e16f6df71f64fba01986f720b2fcba68a"
+	Image                = "gcr.azk8s.cn/kritis-tutorial/java-with-vulnz@sha256:358687cfd3ec8e1dfeb2bf51b5110e4e16f6df71f64fba01986f720b2fcba68a"
 )
 
 func main() {
 	// Load client cert
-	cert, err := tls.LoadX509KeyPair(certFile, keyFile)
+	_, err := tls.LoadX509KeyPair(certFile, keyFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,13 +57,14 @@ func main() {
 	caCertPool.AppendCertsFromPEM(caCert)
 
 	// Setup HTTPS client
-	tlsConfig := &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		RootCAs:      caCertPool,
-	}
-	tlsConfig.BuildNameToCertificate()
-	creds := credentials.NewTLS(tlsConfig)
-	conn, err := grpc.Dial("grafeas-server:443", grpc.WithTransportCredentials(creds))
+	// tlsConfig := &tls.Config{
+	// 	Certificates: []tls.Certificate{cert},
+	// 	RootCAs:      caCertPool,
+	// }
+	// tlsConfig.BuildNameToCertificate()
+	// creds := credentials.NewTLS(tlsConfig)
+	// conn, err := grpc.Dial("grafeas-server:8080", grpc.WithTransportCredentials(creds))
+	conn, err := grpc.Dial("grafeas-server:8080", grpc.WithInsecure())
 	defer conn.Close()
 
 	client := grafeas.NewGrafeasV1Beta1Client(conn)

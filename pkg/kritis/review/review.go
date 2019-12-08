@@ -217,6 +217,7 @@ func (r Reviewer) getAttestationAuthoritiesForGAP(gap v1beta1.GenericAttestation
 	auths := make([]v1beta1.AttestationAuthority, len(gap.Spec.AttestationAuthorityNames))
 	for i, aName := range gap.Spec.AttestationAuthorityNames {
 		a, err := r.config.Auths(gap.Namespace, aName)
+		glog.Infof("auths: %#v\n", a)
 		if err != nil {
 			return nil, fmt.Errorf("Error getting attestors: %v", err)
 		}

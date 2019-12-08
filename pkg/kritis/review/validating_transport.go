@@ -45,6 +45,7 @@ func (avt *AttestorValidatingTransport) GetValidatedAttestations(image string) (
 		return nil, err
 	}
 	keys[fingerprint] = key
+	glog.Info("GetValidatedAttestations keys: %#v %s", keys, image)
 
 	out := []attestation.ValidatedAttestation{}
 	host, err := container.NewAtomicContainerSig(image, map[string]string{})
@@ -53,6 +54,7 @@ func (avt *AttestorValidatingTransport) GetValidatedAttestations(image string) (
 		return nil, err
 	}
 	attestations, err := avt.Client.Attestations(image, &avt.Attestor)
+	glog.Infof("GetValidatedAttestations attestations: %#v %s", attestations, image)
 	if err != nil {
 		glog.Error(err)
 		return nil, err

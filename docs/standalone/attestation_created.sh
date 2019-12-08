@@ -16,8 +16,8 @@
 set -e
 
 # Create a project inside Grafeas.
-curl -k --cert grafeas.pem -X POST \
-  https://grafeas-server:443/v1beta1/projects \
+curl -k --cert grafeas.pem -v -X POST \
+  http://grafeas-server:8080/v1beta1/projects \
   -H "Content-Type: application/json" \
   --data '{"name":"projects/kritis"}'
 

@@ -47,7 +47,7 @@ metadata:
   name: kritis-authority
   namespace: default
 spec:
-  noteReference: v1beta1/projects/standalone
+  noteReference: projects/kritis
   privateKeySecretName: attestor
   publicKeyData: $PUBLIC_KEY
 EOF

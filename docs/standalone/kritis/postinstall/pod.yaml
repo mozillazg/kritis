@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kritis-postinstall
+  annotations:
+    "helm.sh/hook": "post-install"
+#  labels:
+#    {{ .Values.kritisInstallLabel }}: ""
+spec:
+  restartPolicy: Never
+  containers:
+  - name: kritis-postinstall
+    image: "registry.cn-beijing.aliyuncs.com/mirror-233/kritis-project-postinstall:v0.2.0"
+    imagePullPolicy: Always
+    args:
+      - "--webhook-name"
+      - kritis-validation-hook
+      - "--service-name"
+      - kritis-validation-hook
+      - "--tls-secret-name"
+      - tls-webhook-secret
+      - "--deployment-webhook-name"
+      - kritis-validation-hook-deployments
+      - "--kritis-install-label"
+      - "kritis.grafeas.io/install"
+    command: ["/postinstall"]
